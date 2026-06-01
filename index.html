@@ -649,7 +649,7 @@ function cfg() {
 }
 
 async function notionAPI(path, token, options = {}) {
-  const res = await fetch('https://api.notion.com' + path, {
+  const res = await fetch('https://notion-proxy.design-b38.workers.dev' + path, {
     ...options,
     headers: { 'Authorization': 'Bearer ' + token, 'Notion-Version': '2022-06-28', 'Content-Type': 'application/json', ...(options.headers || {}) },
   });
