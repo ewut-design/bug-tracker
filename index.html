@@ -357,13 +357,20 @@
     </div>
     <div class="modal-body">
       <div class="ai-toolbar">
-        <button class="ai-btn" id="ai-fill-btn" onclick="aiFillContent()">
-          ✦ AI로 내용 채우기
+        <button class="ai-btn" id="ai-fill-btn" onclick="copyFillPrompt()">
+          📋 내용 채우기 프롬프트 복사
         </button>
-        <button class="ai-btn ai-btn-refine" id="ai-refine-btn" onclick="aiRefineContent()">
-          ✦ 문장 다듬기
+        <button class="ai-btn ai-btn-refine" id="ai-refine-btn" onclick="copyRefinePrompt()">
+          📋 문장 다듬기 프롬프트 복사
         </button>
         <span class="ai-status" id="ai-status"></span>
+      </div>
+      <div id="ai-guide" style="display:none; background:rgba(79,142,247,0.08); border:1px solid rgba(79,142,247,0.2); border-radius:8px; padding:12px 14px; margin-bottom:16px; font-size:12px; color:var(--text2); line-height:1.8;">
+        ✅ 프롬프트가 복사됐어요!<br>
+        1. 아래 버튼으로 클로드 채팅창 열기<br>
+        2. 붙여넣기 (Ctrl+V / Cmd+V) 후 전송<br>
+        3. 답변 받으면 각 필드에 직접 입력<br>
+        <a href="https://claude.ai/new" target="_blank" style="display:inline-block;margin-top:8px;padding:5px 12px;background:var(--accent);color:#fff;border-radius:6px;text-decoration:none;font-weight:500;">클로드 채팅창 열기 →</a>
       </div>
       <div class="edit-row">
         <div class="edit-section">
@@ -915,26 +922,16 @@ async function runRegistration() {
   await fetchItems();
 }
 
-/* ── AI 기능 ── */
-async function callClaude(prompt) {
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 1000,
-      messages: [{ role: 'user', content: prompt }],
-    }),
-  });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error?.message || '클로드 API 오류');
-  return data.content?.[0]?.text || '';
+/* ── 클립보드 복사 기능 ── */
+function showGuide() {
+  document.getElementById('ai-guide').style.display = '';
+  setTimeout(() => document.getElementById('ai-guide').style.display = 'none', 15000);
 }
 
-function setAiStatus(msg, color = 'var(--text3)') {
+function setAiStatus(msg, color) {
   const el = document.getElementById('ai-status');
   el.textContent = msg;
-  el.style.color = color;
+  el.style.color = color || 'var(--text3)';
 }
 
 function highlightField(id) {
@@ -945,14 +942,7 @@ function highlightField(id) {
   el.classList.add('field-highlight');
 }
 
-async function aiFillContent() {
-  const btn = document.getElementById('ai-fill-btn');
-  const refineBtn = document.getElementById('ai-refine-btn');
-  btn.disabled = true;
-  refineBtn.disabled = true;
-  btn.innerHTML = '<span class="spinner" style="border-top-color:#7eb3ff;border-color:rgba(126,179,255,0.3)"></span> 분석 중...';
-  setAiStatus('오류 내용을 분석하고 있어요...', 'var(--accent)');
-
+function copyFillPrompt() {
   const 오류내용 = document.getElementById('m-content').value.trim();
   const URL = document.getElementById('m-url').value.trim();
   const 메뉴 = document.getElementById('modal-title').textContent;
@@ -960,131 +950,89 @@ async function aiFillContent() {
 
   if (!오류내용) {
     setAiStatus('오류 내용을 먼저 입력해주세요.', 'var(--red)');
-    btn.disabled = false;
-    refineBtn.disabled = false;
-    btn.innerHTML = '✦ AI로 내용 채우기';
     return;
   }
 
-  const prompt = `당신은 소프트웨어 QA 전문가입니다. 아래 버그 정보를 바탕으로 누락된 항목을 작성해주세요.
+  const prompt = `아래 버그 정보를 바탕으로 누락된 항목을 작성해줘. QA 버그 리포트 양식이야.
 
 ## 입력 정보
 - 메뉴: ${메뉴 || '미입력'}
-- 상세경로: ${상세경로 || '미입력'}
+- 상세경로: ${상세경로 || '미입력 (메뉴 > 서브메뉴 > 페이지 형태로 작성해줘)'}
 - URL: ${URL || '미입력'}
 - 오류내용: ${오류내용}
 
 ## 작성 규칙
-- 재현단계: 번호 매겨서 구체적으로 (예: 1. xxx 접속\n2. xxx 클릭)
+- 재현단계: 번호 매겨서 구체적으로 작성 (예: 1. 해당 페이지 접속 / 2. 버튼 클릭)
 - 정상동작: "~해야 함" 형태로 명확하게
 - 콘솔에러: 알 수 없으면 "없음"
-- 상세경로: 메뉴 > 서브메뉴 > 페이지 형태, URL 참고해서 추론
+- 상세경로: URL 참고해서 추론, 이미 입력된 경우 그대로 사용
 - 재현조건: 항상 발생하면 "항상 발생", 특정 조건이면 구체적으로
 
-## 응답 형식 (JSON만 반환, 다른 텍스트 없이)
-{
-  "상세경로": "",
-  "재현단계": "",
-  "재현조건": "",
-  "정상동작": "",
-  "콘솔에러": ""
-}`;
+## 아래 양식 그대로 답변해줘 (다른 설명 없이)
+상세경로: 
+재현단계: 
+재현조건: 
+정상동작: 
+콘솔에러: `;
 
-  try {
-    const raw = await callClaude(prompt);
-    const clean = raw.replace(/```json|```/g, '').trim();
-    const result = JSON.parse(clean);
-
-    const fields = ['상세경로', '재현단계', '재현조건', '정상동작', '콘솔에러'];
-    const ids = { '상세경로': 'm-path', '재현단계': 'm-steps', '재현조건': 'm-condition', '정상동작': 'm-expected', '콘솔에러': 'm-console' };
-
-    fields.forEach(f => {
-      if (result[f]) {
-        const el = document.getElementById(ids[f]);
-        if (el && !el.value.trim()) {
-          el.value = result[f];
-          highlightField(ids[f]);
-        }
-      }
-    });
-
-    setAiStatus('✓ 내용이 채워졌어요. 확인 후 수정하세요.', 'var(--green)');
-  } catch (e) {
-    setAiStatus('실패: ' + e.message, 'var(--red)');
-  } finally {
-    btn.disabled = false;
-    refineBtn.disabled = false;
-    btn.innerHTML = '✦ AI로 내용 채우기';
-  }
+  navigator.clipboard.writeText(prompt).then(() => {
+    setAiStatus('✓ 복사 완료!', 'var(--green)');
+    document.getElementById('ai-fill-btn').textContent = '📋 복사됨!';
+    showGuide();
+    setTimeout(() => {
+      document.getElementById('ai-fill-btn').innerHTML = '📋 내용 채우기 프롬프트 복사';
+      setAiStatus('', 'var(--text3)');
+    }, 3000);
+  }).catch(() => {
+    setAiStatus('복사 실패. 브라우저 권한을 확인해주세요.', 'var(--red)');
+  });
 }
 
-async function aiRefineContent() {
-  const btn = document.getElementById('ai-refine-btn');
-  const fillBtn = document.getElementById('ai-fill-btn');
-  btn.disabled = true;
-  fillBtn.disabled = true;
-  btn.innerHTML = '<span class="spinner" style="border-top-color:#c084fc;border-color:rgba(192,132,252,0.3)"></span> 다듬는 중...';
-  setAiStatus('문장을 다듬고 있어요...', '#c084fc');
-
+function copyRefinePrompt() {
   const vals = getModalValues();
   if (!vals.오류내용) {
     setAiStatus('오류 내용을 먼저 입력해주세요.', 'var(--red)');
-    btn.disabled = false;
-    fillBtn.disabled = false;
-    btn.innerHTML = '✦ 문장 다듬기';
     return;
   }
 
-  const prompt = `당신은 소프트웨어 QA 전문가입니다. 아래 버그 리포트 내용을 개발팀과 AI가 명확히 이해할 수 있도록 다듬어주세요.
+  const prompt = `아래 버그 리포트 내용을 개발팀과 AI가 명확히 이해할 수 있도록 다듬어줘.
 
 ## 현재 내용
 - 오류내용: ${vals.오류내용}
-- 상세경로: ${vals.상세경로}
-- 재현단계: ${vals.재현단계}
-- 재현조건: ${vals.재현조건}
-- 정상동작: ${vals.정상동작}
-- 콘솔에러: ${vals.콘솔에러}
+- 상세경로: ${vals.상세경로 || '없음'}
+- 재현단계: ${vals.재현단계 || '없음'}
+- 재현조건: ${vals.재현조건 || '없음'}
+- 정상동작: ${vals.정상동작 || '없음'}
+- 콘솔에러: ${vals.콘솔에러 || '없음'}
 
 ## 다듬기 규칙
 - 애매한 표현을 구체적으로 수정 (예: "안 눌림" → "클릭 시 반응 없음")
 - 재현단계는 번호 매겨서 명확하게
 - 정상동작은 "~해야 함" 형태로
-- 빈 항목은 그대로 빈 문자열로 유지
+- 빈 항목은 "없음" 유지
 - 내용이 이미 명확하면 그대로 유지
 
-## 응답 형식 (JSON만 반환, 다른 텍스트 없이)
-{
-  "오류내용": "",
-  "상세경로": "",
-  "재현단계": "",
-  "재현조건": "",
-  "정상동작": "",
-  "콘솔에러": ""
-}`;
+## 아래 양식 그대로 답변해줘 (다른 설명 없이)
+오류내용: 
+상세경로: 
+재현단계: 
+재현조건: 
+정상동작: 
+콘솔에러: `;
 
-  try {
-    const raw = await callClaude(prompt);
-    const clean = raw.replace(/```json|```/g, '').trim();
-    const result = JSON.parse(clean);
-
-    const map = { '오류내용': 'm-content', '상세경로': 'm-path', '재현단계': 'm-steps', '재현조건': 'm-condition', '정상동작': 'm-expected', '콘솔에러': 'm-console' };
-    Object.entries(map).forEach(([key, id]) => {
-      if (result[key]) {
-        document.getElementById(id).value = result[key];
-        highlightField(id);
-      }
-    });
-
-    if (result['오류내용']) document.getElementById('modal-title').textContent = result['오류내용'];
-    setAiStatus('✓ 문장이 다듬어졌어요. 확인해보세요.', 'var(--green)');
-  } catch (e) {
-    setAiStatus('실패: ' + e.message, 'var(--red)');
-  } finally {
-    btn.disabled = false;
-    fillBtn.disabled = false;
-    btn.innerHTML = '✦ 문장 다듬기';
-  }
+  navigator.clipboard.writeText(prompt).then(() => {
+    setAiStatus('✓ 복사 완료!', 'var(--green)');
+    document.getElementById('ai-refine-btn').textContent = '📋 복사됨!';
+    showGuide();
+    setTimeout(() => {
+      document.getElementById('ai-refine-btn').innerHTML = '📋 문장 다듬기 프롬프트 복사';
+      setAiStatus('', 'var(--text3)');
+    }, 3000);
+  }).catch(() => {
+    setAiStatus('복사 실패. 브라우저 권한을 확인해주세요.', 'var(--red)');
+  });
 }
+
 
 /* ── 초기화 ── */
 loadSettings();
