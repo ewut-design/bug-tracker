@@ -792,12 +792,28 @@ async function registerFromModal() {
 /* ── 지라 등록 ── */
 function makeTitle(item) {
   const menu = item.메뉴 ? `[${item.메뉴}] ` : '';
-  let summary = item.오류내용 || '';
-  const lines = summary.split(/\n|\d+\.\s/).filter(Boolean);
-  summary = lines[0] || summary;
-  summary = summary.replace(/[은는이가을를]/g, '').trim();
-  if (summary.length > 20) summary = summary.slice(0, 20);
-  return menu + summary;
+  let content = item.오류내용 || '';
+
+  // 번호 목록이면 첫 항목 추출
+  const numberedLines = content.match(/\d+\.\s+(.+)/g);
+  if (numberedLines && numberedLines.length > 0) {
+    content = numberedLines[0].replace(/^\d+\.\s+/, '');
+  } else {
+    content = content.split('\n')[0];
+  }
+
+  // 대괄호 내용 제거
+  content = content.replace(/\[.*?\]/g, '').trim();
+  // 특수문자 정리
+  content = content.replace(/[\'"\u2018\u2019\u201c\u201d,]/g, '').trim();
+  // 불필요한 어미/조사 제거
+  content = content
+    .replace(/(\s*)(이|가|을|를|은|는|에서|으로|로|와|과|의|도|만|에)$/, '')
+    .replace(/(이다|다|됩니다|입니다|합니다|되어있음|되어 있음|있음|없음)\.?$/, '')
+    .trim();
+
+  if (content.length > 20) content = content.slice(0, 20);
+  return menu + content;
 }
 
 function makeBody(item) {
