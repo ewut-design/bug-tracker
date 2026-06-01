@@ -832,7 +832,8 @@ async function attachImage(c, issueKey, url, filename) {
   const blob = await imgRes.blob();
   const form = new FormData();
   form.append('file', blob, filename);
-  const res = await fetch('https://jira-proxy.design-b38.workers.dev/rest/api/2/issue/' + issueKey + '/attachments?domain=' + encodeURIComponent(c.jiraDomain), {
+  // 이미지 첨부는 프록시 없이 지라에 직접 전송 (multipart boundary 보존)
+  const res = await fetch('https://' + c.jiraDomain + '/rest/api/2/issue/' + issueKey + '/attachments', {
     method: 'POST',
     headers: { 'Authorization': 'Basic ' + btoa(c.jiraEmail + ':' + c.jiraToken), 'X-Atlassian-Token': 'no-check' },
     body: form,
