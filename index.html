@@ -523,7 +523,9 @@ async function notionAPI(path, token, options = {}) {
 }
 
 async function jiraAPI(path, c, options = {}) {
-  const res = await fetch('https://' + c.jiraDomain + path, {
+  const sep = path.includes('?') ? '&' : '?';
+  const url = 'https://jira-proxy.design-b38.workers.dev' + path + sep + 'domain=' + encodeURIComponent(c.jiraDomain);
+  const res = await fetch(url, {
     ...options,
     headers: { 'Authorization': 'Basic ' + btoa(c.jiraEmail + ':' + c.jiraToken), 'Content-Type': 'application/json', ...(options.headers || {}) },
   });
@@ -814,7 +816,7 @@ async function attachImage(c, issueKey, url, filename) {
   const blob = await imgRes.blob();
   const form = new FormData();
   form.append('file', blob, filename);
-  const res = await fetch('https://' + c.jiraDomain + '/rest/api/2/issue/' + issueKey + '/attachments', {
+  const res = await fetch('https://jira-proxy.design-b38.workers.dev/rest/api/2/issue/' + issueKey + '/attachments?domain=' + encodeURIComponent(c.jiraDomain), {
     method: 'POST',
     headers: { 'Authorization': 'Basic ' + btoa(c.jiraEmail + ':' + c.jiraToken), 'X-Atlassian-Token': 'no-check' },
     body: form,
