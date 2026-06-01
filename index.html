@@ -812,7 +812,7 @@ function makeTitle(item) {
     .replace(/(이다|다|됩니다|입니다|합니다|되어있음|되어 있음|있음|없음)\.?$/, '')
     .trim();
 
-  if (content.length > 20) content = content.slice(0, 20);
+  if (content.length > 30) content = content.slice(0, 30);
   return menu + content;
 }
 
