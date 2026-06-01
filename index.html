@@ -88,6 +88,8 @@
   .tag-type-dev { background: rgba(239,68,68,0.12); color: #ff8080; }
   .tag-type-design { background: rgba(168,85,247,0.12); color: #c084fc; }
   .tag-type-check { background: rgba(234,179,8,0.12); color: #fbbf24; }
+  .tag-type-hold { background: rgba(136,136,136,0.12); color: #aaa; }
+  .tag-type-suggest { background: rgba(34,197,94,0.12); color: #4ade80; }
   .tag-type-other { background: rgba(136,136,136,0.12); color: #888; }
   .tag-img { background: rgba(34,197,94,0.12); color: #4ade80; font-size: 10px; padding: 2px 6px; }
   .assignee-input { background: var(--bg3); border: 1px solid var(--border); color: var(--text); border-radius: 6px; padding: 4px 8px; font-size: 12px; font-family: inherit; outline: none; width: 120px; }
@@ -126,30 +128,39 @@
   .log-warn { color: var(--yellow); }
 
   /* MODAL */
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 24px; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 24px; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
   .modal-overlay.open { opacity: 1; pointer-events: all; }
-  .modal { background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius2); width: 100%; max-width: 680px; max-height: 85vh; display: flex; flex-direction: column; }
+  .modal { background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius2); width: 100%; max-width: 700px; max-height: 88vh; display: flex; flex-direction: column; }
   .modal-header { padding: 18px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
-  .modal-title { font-size: 15px; font-weight: 600; line-height: 1.4; }
-  .modal-close { background: none; border: none; color: var(--text3); font-size: 20px; cursor: pointer; line-height: 1; padding: 2px 6px; border-radius: 4px; transition: all 0.15s; flex-shrink: 0; }
+  .modal-title { font-size: 15px; font-weight: 600; line-height: 1.4; flex: 1; }
+  .modal-badge { font-size: 11px; padding: 2px 8px; border-radius: 99px; background: rgba(79,142,247,0.15); color: #7eb3ff; white-space: nowrap; align-self: center; }
+  .modal-close { background: none; border: none; color: var(--text3); font-size: 20px; cursor: pointer; line-height: 1; padding: 2px 6px; border-radius: 4px; flex-shrink: 0; }
   .modal-close:hover { color: var(--text); background: var(--bg4); }
   .modal-body { padding: 20px; overflow-y: auto; flex: 1; }
   .modal-body::-webkit-scrollbar { width: 4px; }
   .modal-body::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
-  .preview-section { margin-bottom: 18px; }
-  .preview-label { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
-  .preview-value { font-size: 13px; color: var(--text); line-height: 1.7; white-space: pre-wrap; background: var(--bg3); border-radius: var(--radius); padding: 10px 12px; border: 1px solid var(--border); }
-  .preview-value.inline { background: none; border: none; padding: 0; font-size: 14px; font-weight: 500; color: var(--text); }
-  .preview-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
+  .edit-section { margin-bottom: 16px; }
+  .edit-label { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; display: flex; align-items: center; gap: 4px; }
+  .edit-label .required { color: var(--red); font-size: 10px; }
+  .edit-input { width: 100%; background: var(--bg3); border: 1px solid var(--border); color: var(--text); border-radius: var(--radius); padding: 8px 12px; font-size: 13px; font-family: inherit; outline: none; transition: border-color 0.15s; resize: vertical; line-height: 1.6; }
+  .edit-input:focus { border-color: var(--accent); }
+  .edit-input::placeholder { color: var(--text3); }
+  .edit-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
   .preview-images { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
-  .preview-img-thumb { width: 80px; height: 60px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); }
-  .modal-footer { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 8px; }
+  .preview-img-thumb { width: 80px; height: 60px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); cursor: pointer; }
+  .preview-img-thumb:hover { border-color: var(--accent); }
+  .modal-footer { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .modal-footer-left { font-size: 12px; color: var(--text3); }
+  .modal-footer-right { display: flex; gap: 8px; }
   .modal-btn { padding: 8px 18px; border-radius: var(--radius); font-size: 13px; font-weight: 500; font-family: inherit; cursor: pointer; transition: all 0.15s; }
   .modal-btn-cancel { background: none; border: 1px solid var(--border2); color: var(--text2); }
-  .modal-btn-cancel:hover { color: var(--text); border-color: var(--border2); }
+  .modal-btn-cancel:hover { color: var(--text); }
+  .modal-btn-save { background: var(--bg3); border: 1px solid var(--border2); color: var(--text); }
+  .modal-btn-save:hover { background: var(--bg4); border-color: var(--green); color: var(--green); }
   .modal-btn-reg { background: var(--accent); border: none; color: #fff; }
   .modal-btn-reg:hover { background: var(--accent2); }
-  .modal-btn-reg:disabled { opacity: 0.4; cursor: not-allowed; }
+  .modal-btn-reg:disabled, .modal-btn-save:disabled { opacity: 0.4; cursor: not-allowed; }
+  .save-notice.saved { color: var(--green); }
 
   /* MISC */
   @keyframes spin { to { transform: rotate(360deg); } }
@@ -263,6 +274,8 @@
           <option value="개발 이슈">개발 이슈</option>
           <option value="디자인 이슈">디자인 이슈</option>
           <option value="확인필요">확인필요</option>
+          <option value="제안고려">제안고려</option>
+          <option value="보류">보류</option>
         </select>
         <button class="toolbar-btn" onclick="selectAll(true)">전체 선택</button>
         <button class="toolbar-btn" onclick="selectAll(false)">전체 해제</button>
@@ -325,17 +338,60 @@
   </div>
 </main>
 
-<!-- 상세보기 모달 -->
+<!-- 상세보기/수정 모달 -->
 <div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
   <div class="modal">
     <div class="modal-header">
       <div class="modal-title" id="modal-title"></div>
+      <span class="modal-badge">수정 후 저장하면 노션에 반영됩니다</span>
       <button class="modal-close" onclick="closeModal()">×</button>
     </div>
-    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-body">
+      <div class="edit-row">
+        <div class="edit-section">
+          <div class="edit-label">메뉴 (상세경로) <span class="required">필수</span></div>
+          <input class="edit-input" id="m-path" placeholder="상세경로 입력">
+        </div>
+        <div class="edit-section">
+          <div class="edit-label">URL</div>
+          <input class="edit-input" id="m-url" placeholder="https://...">
+        </div>
+      </div>
+      <div class="edit-section">
+        <div class="edit-label">오류 내용 <span class="required">필수</span></div>
+        <textarea class="edit-input" id="m-content" rows="3" placeholder="오류 내용 입력"></textarea>
+      </div>
+      <div class="edit-section">
+        <div class="edit-label">재현 단계 <span class="required">필수</span></div>
+        <textarea class="edit-input" id="m-steps" rows="3" placeholder="재현 단계 입력"></textarea>
+      </div>
+      <div class="edit-row">
+        <div class="edit-section">
+          <div class="edit-label">재현 조건</div>
+          <input class="edit-input" id="m-condition" placeholder="항상 발생">
+        </div>
+        <div class="edit-section">
+          <div class="edit-label">콘솔 에러</div>
+          <input class="edit-input" id="m-console" placeholder="없음">
+        </div>
+      </div>
+      <div class="edit-section">
+        <div class="edit-label">정상 동작 <span class="required">필수</span></div>
+        <textarea class="edit-input" id="m-expected" rows="2" placeholder="정상 동작 입력"></textarea>
+      </div>
+      <div id="m-images-section" style="display:none;margin-top:4px;">
+        <div class="edit-label">이미지 첨부</div>
+        <div class="preview-images" id="m-images"></div>
+        <div style="font-size:11px;color:var(--text3);margin-top:6px;">지라 등록 시 첨부파일로 자동 업로드됩니다</div>
+      </div>
+    </div>
     <div class="modal-footer">
-      <button class="modal-btn modal-btn-cancel" onclick="closeModal()">닫기</button>
-      <button class="modal-btn modal-btn-reg" id="modal-reg-btn" onclick="registerFromModal()">이 항목 지라 등록</button>
+      <div class="modal-footer-left" id="modal-save-notice"></div>
+      <div class="modal-footer-right">
+        <button class="modal-btn modal-btn-cancel" onclick="closeModal()">닫기</button>
+        <button class="modal-btn modal-btn-save" id="modal-save-btn" onclick="saveToNotion()">노션에 저장</button>
+        <button class="modal-btn modal-btn-reg" id="modal-reg-btn" onclick="registerFromModal()">이 항목 지라 등록</button>
+      </div>
     </div>
   </div>
 </div>
@@ -460,7 +516,11 @@ function extractProps(page) {
     if (type === 'title') return prop.title?.map(t => t.plain_text).join('') || '';
     if (type === 'text') return prop.rich_text?.map(t => t.plain_text).join('') || '';
     if (type === 'select') return prop.select?.name || '';
-    if (type === 'url') return prop.url || '';
+    if (type === 'url') {
+      if (prop.type === 'url') return prop.url || '';
+      if (prop.type === 'rich_text') return prop.rich_text?.map(t => t.plain_text).join('') || '';
+      return prop.url || prop.rich_text?.map(t => t.plain_text).join('') || '';
+    }
     return '';
   };
   return {
@@ -555,7 +615,9 @@ function renderTable() {
     tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg><p style="margin-top:12px;">항목이 없습니다.</p></div></td></tr>`;
     return;
   }
-  const typeClass = t => t === '개발 이슈' ? 'tag-type-dev' : t === '디자인 이슈' ? 'tag-type-design' : t === '확인필요' ? 'tag-type-check' : 'tag-type-other';
+  const typeClass = t => t === '개발 이슈' ? 'tag-type-dev' : t === '디자인 이슈' ? 'tag-type-design' :
+    t === '확인필요' ? 'tag-type-check' : t === '보류' ? 'tag-type-hold' :
+    t === '제안고려' ? 'tag-type-suggest' : 'tag-type-other';
   tbody.innerHTML = filteredItems.map((item, i) => `
     <tr>
       <td><input type="checkbox" checked id="chk-${i}" data-idx="${i}"></td>
@@ -594,55 +656,26 @@ function openModal(idx) {
   modalItemIdx = idx;
   const item = filteredItems[idx];
   document.getElementById('modal-title').textContent = item.오류내용 || '(제목 없음)';
+  document.getElementById('m-path').value = item.상세경로 || '';
+  document.getElementById('m-url').value = item.URL || '';
+  document.getElementById('m-content').value = item.오류내용 || '';
+  document.getElementById('m-steps').value = item.재현단계 || '';
+  document.getElementById('m-condition').value = item.재현조건 || '';
+  document.getElementById('m-console').value = item.콘솔에러 || '';
+  document.getElementById('m-expected').value = item.정상동작 || '';
+  document.getElementById('modal-save-notice').textContent = '';
+  document.getElementById('modal-save-notice').className = 'modal-footer-left';
 
-  const body = document.getElementById('modal-body');
-  body.innerHTML = `
-    <div class="preview-row">
-      <div class="preview-section">
-        <div class="preview-label">메뉴 (상세경로)</div>
-        <div class="preview-value">${item.상세경로 || '-'}</div>
-      </div>
-      <div class="preview-section">
-        <div class="preview-label">URL</div>
-        <div class="preview-value">${item.URL ? `<a href="${item.URL}" target="_blank" style="color:var(--accent);font-size:12px;">${item.URL}</a>` : '-'}</div>
-      </div>
-    </div>
-    <div class="preview-section">
-      <div class="preview-label">오류 내용</div>
-      <div class="preview-value">${item.오류내용 || '-'}</div>
-    </div>
-    <div class="preview-section">
-      <div class="preview-label">재현 단계</div>
-      <div class="preview-value">${item.재현단계 || '-'}</div>
-    </div>
-    <div class="preview-row">
-      <div class="preview-section">
-        <div class="preview-label">재현 조건</div>
-        <div class="preview-value">${item.재현조건 || '항상 발생'}</div>
-      </div>
-      <div class="preview-section">
-        <div class="preview-label">콘솔 에러</div>
-        <div class="preview-value">${item.콘솔에러 || '없음'}</div>
-      </div>
-    </div>
-    <div class="preview-section">
-      <div class="preview-label">정상 동작</div>
-      <div class="preview-value">${item.정상동작 || '-'}</div>
-    </div>
-    ${item.textLines.length > 0 ? `
-    <div class="preview-section">
-      <div class="preview-label">페이지 본문</div>
-      <div class="preview-value">${item.textLines.map((t,i) => `${i+1}. ${t}`).join('\n')}</div>
-    </div>` : ''}
-    ${item.images.length > 0 ? `
-    <div class="preview-section">
-      <div class="preview-label">이미지 (${item.images.length}개)</div>
-      <div class="preview-images">
-        ${item.images.map((img, i) => `<img class="preview-img-thumb" src="${img.url}" alt="이미지 ${i+1}" title="${img.caption || '이미지 ' + (i+1)}" onerror="this.style.display='none'">`).join('')}
-      </div>
-      <div style="font-size:11px;color:var(--text3);margin-top:6px;">※ 지라 등록 시 첨부파일로 자동 업로드됩니다</div>
-    </div>` : ''}
-  `;
+  const imgSection = document.getElementById('m-images-section');
+  const imgContainer = document.getElementById('m-images');
+  if (item.images.length > 0) {
+    imgSection.style.display = '';
+    imgContainer.innerHTML = item.images.map((img, i) =>
+      `<img class="preview-img-thumb" src="${img.url}" alt="이미지 ${i+1}" title="${img.caption || '이미지'+(i+1)}" onerror="this.style.display='none'" onclick="window.open('${img.url}','_blank')">`
+    ).join('');
+  } else {
+    imgSection.style.display = 'none';
+  }
   document.getElementById('modal-overlay').classList.add('open');
 }
 
@@ -655,19 +688,77 @@ function closeModalOutside(e) {
   if (e.target === document.getElementById('modal-overlay')) closeModal();
 }
 
+function getModalValues() {
+  return {
+    상세경로: document.getElementById('m-path').value.trim(),
+    URL: document.getElementById('m-url').value.trim(),
+    오류내용: document.getElementById('m-content').value.trim(),
+    재현단계: document.getElementById('m-steps').value.trim(),
+    재현조건: document.getElementById('m-condition').value.trim(),
+    콘솔에러: document.getElementById('m-console').value.trim(),
+    정상동작: document.getElementById('m-expected').value.trim(),
+  };
+}
+
+async function saveToNotion() {
+  if (modalItemIdx < 0) return;
+  const c = cfg();
+  const vals = getModalValues();
+  const item = filteredItems[modalItemIdx];
+  const btn = document.getElementById('modal-save-btn');
+  const notice = document.getElementById('modal-save-notice');
+  btn.disabled = true;
+  btn.textContent = '저장 중...';
+  const richText = (val) => val ? [{ text: { content: val } }] : [];
+  try {
+    await notionAPI(`/v1/pages/${item.id}`, c.notionToken, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        properties: {
+          '오류내용': { title: richText(vals.오류내용) },
+          '상세경로': { rich_text: richText(vals.상세경로) },
+          'URL': { url: vals.URL || null },
+          '재현단계': { rich_text: richText(vals.재현단계) },
+          '재현조건': vals.재현조건 ? { select: { name: vals.재현조건 } } : { select: null },
+          '정상동작': { rich_text: richText(vals.정상동작) },
+          '콘솔에러': { rich_text: richText(vals.콘솔에러) },
+        }
+      }),
+    });
+    Object.assign(filteredItems[modalItemIdx], vals);
+    const mainIdx = allItems.findIndex(i => i.id === item.id);
+    if (mainIdx >= 0) Object.assign(allItems[mainIdx], vals);
+    renderTable();
+    document.getElementById('modal-title').textContent = vals.오류내용;
+    notice.textContent = '✓ 노션에 저장되었습니다';
+    notice.className = 'modal-footer-left save-notice saved';
+    showToast('노션 저장 완료', 'ok');
+    addLog(`노션 수정 저장: ${vals.오류내용.slice(0,30)}`, 'ok');
+  } catch (e) {
+    notice.textContent = '저장 실패: ' + e.message;
+    notice.style.color = 'var(--red)';
+    showToast('저장 실패: ' + e.message, 'err');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '노션에 저장';
+  }
+}
+
 async function registerFromModal() {
   if (modalItemIdx < 0) return;
-  const btn = document.getElementById('modal-reg-btn');
-  btn.disabled = true;
-  btn.textContent = '등록 중...';
-  closeModal();
-  const item = { ...filteredItems[modalItemIdx] };
+  const vals = getModalValues();
+  const item = { ...filteredItems[modalItemIdx], ...vals };
   const idxEl = document.getElementById('asgn-' + modalItemIdx);
   item.assigneeId = idxEl?.value.trim() || '';
+  const btn = document.getElementById('modal-reg-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>';
+  closeModal();
+  switchTab('log');
+  document.getElementById('progress-card').style.display = '';
   await registerSingle(item, cfg(), 1, 1);
   btn.disabled = false;
   btn.textContent = '이 항목 지라 등록';
-  switchTab('log');
   await fetchItems();
 }
 
